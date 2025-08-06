@@ -1,11 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPtimizador de rutas</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Optimización NSGA-II</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Leaflet-->
+    <link rel= "stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </head>
 <body>
-    <h1>¡Hola desde Flask con estructura modular!</h1>
+
+  <h1>Optimización de Rutas - NSGA-II</h1>
+
+  <div class="parametros">
+    <h2>Parámetros</h2>
+    <label>Población: <input type="number" id="poblacion"></label>
+    <label>Generaciones: <input type="number" id="generaciones"></label>
+    <label>Probabilidad Mutación: <input type="number" step="0.01" id="mutacion"></label>
+    <button onclick="ejecutarOptimizacion()">Ejecutar Optimización</button>
+  </div>
+  <h2>Subir Archivos CSV</h2>
+<form id="formularioArchivos" enctype="multipart/form-data">
+  <label>Archivo de Zonas (CSV): <input type="file" name="zonas"></label><br><br>
+  <label>Archivo de Distancias (CSV): <input type="file" name="distancias"></label><br><br>
+  <button type="button" onclick="subirArchivos()">Subir Archivos</button>
+</form>
+
+  <h2>Zonas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Zona</th>
+        <th>Latitud</th>
+        <th>Longitud</th>
+        <th>Volumen (kg)</th>
+        <th>Prioridad</th>
+        <th>Penalización</th>
+      </tr>
+    </thead>
+    <tbody id="tablaZonas">
+      <!-- Aquí se insertarán filas dinámicamente -->
+    </tbody>
+  </table>
+
+  <h2>Distancias</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Origen</th>
+        <th>Destino</th>
+        <th>Distancia (km)</th>
+        <th>Tiempo Estimado</th>
+      </tr>
+    </thead>
+    <tbody id="tablaDistancias">
+      <!-- Aquí se insertarán filas dinámicamente -->
+    </tbody>
+  </table>
+
+  <div class="mensaje" id="mensajeEstado">
+    Estado: Esperando datos...
+  </div>
+  <h2>Filtrar Rutas</h2>
+  <label>
+    <select id="filtro" onchange="actualizarFiltro()">
+      <option value="prioridad">Máxima prioridad</option>
+      <option value="distancia">Menor tiempo/distancia</option>
+    </select>
+  </label>
+
+  <div id="map"></div>
+
+  <p>Distancia Total: <span id="distanciaTotal">xxx km</span></p>
+  <p>Tiempo Total: <span id="tiempoTotal">xxx min</span></p>
+
+  <canvas id="scatterChart"></canvas>
+
+  <!-- Scripts de librerías externas -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Tu JS -->
+  <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
