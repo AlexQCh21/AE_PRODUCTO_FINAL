@@ -16,16 +16,16 @@ def subir_csv():
     if 'zonas' not in request.files or 'distancias' not in request.files:
         return jsonify({'mensaje': 'Archivos CSV incompletos'}), 400
     
-    zonas_file = request.file['zonas']
-    distancias_file = request.file['distancias']
+    zonas_file = request.files['zonas']
+    distancias_file = request.files['distancias']
 
     try:
         zonas_df = pd.read_csv(zonas_file)
         distancias_df = pd.read_csv(distancias_file)
 
         #Aquí guardar en el servidor
-        #zonas_df.to_csv('zonas_subidas.csv', index=False)
-        #distancias_df.to_csv('distancias_subidas.csv', index=False)
+        zonas_df.to_csv('zonas_subidas.csv', index=False)
+        distancias_df.to_csv('distancias_subidas.csv', index=False)
 
         return jsonify({'mensaje': 'Archivos cargado exitosamente',
                        'zonas_preview': zonas_df.head(3).to_dict(orient='records'),

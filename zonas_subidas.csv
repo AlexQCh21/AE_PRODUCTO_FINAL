@@ -1,0 +1,7 @@
+id,nombre_zona,latitud,longitud,volumen_estimado_kg,horario_pico_inicio,horario_pico_fin,prioridad,penalizacion_min
+1,Urb. Bruces,-9.1241,-78.523,300,6,8,5,8
+2,Urb. Banchero Rossi,-9.1252,-78.5221,250,7,9,4,6
+3,Urb. Santa Cristina,-9.1263,-78.5212,180,5,7,3,4
+4,Urb. San Rafael,-9.1274,-78.5203,280,6,9,5,10
+5,Urb. El Dorado,-9.1285,-78.5194,200,7,10,2,5
+6,Las Gardenias,-9.1296,-78.5185,220,6,8,3,7
