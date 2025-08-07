@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Optimización NSGA-II</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Leaflet-->
     <link rel= "stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -12,82 +12,172 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
+  <!-- Header moderno -->
+  <header class="hero-section">
+    <div class="hero-content">
+      <h1>Optimización de Rutas - NSGA-II</h1>
+      <p>Sistema avanzado para optimizar rutas de recolección de residuos en Nuevo Chimbote</p>
+      <img src="{{ url_for('static', filename='img/img_recoleccion.jpeg') }}" alt="Camión recolector" class="hero-image">
+    </div>
+  </header>
 
-  <h1>Optimización de Rutas - NSGA-II</h1>
+  <main class="container">
+    <!-- Sección de Parámetros -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Configuración de Parámetros</h2>
+       <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-280h80l12-60q12-5 22.5-10.5T576-364l58 18 40-68-46-40q2-14 2-26t-2-26l46-40-40-68-58 18q-11-8-21.5-13.5T532-620l-12-60h-80l-12 60q-12 5-22.5 10.5T384-596l-58-18-40 68 46 40q-2 14-2 26t2 26l-46 40 40 68 58-18q11 8 21.5 13.5T428-340l12 60Zm40-120q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>
+      </div>
+      <div class="parametros">
+        <div class="input-group">
+          <label for="poblacion">Población:</label>
+          <input type="number" id="poblacion" placeholder="Ej: 100">
+        </div>
+        <div class="input-group">
+          <label for="generaciones">Generaciones:</label>
+          <input type="number" id="generaciones" placeholder="Ej: 50">
+        </div>
+        <div class="input-group">
+          <label for="mutacion">Probabilidad Mutación:</label>
+          <input type="number" step="0.01" id="mutacion" placeholder="Ej: 0.1">
+        </div>
+        <button class="btn-primary" onclick="ejecutarOptimizacion()">Ejecutar Optimización</button>
+      </div>
+    </section>
 
-  <div class="parametros">
-    <h2>Parámetros</h2>
-    <label>Población: <input type="number" id="poblacion"></label>
-    <label>Generaciones: <input type="number" id="generaciones"></label>
-    <label>Probabilidad Mutación: <input type="number" step="0.01" id="mutacion"></label>
-    <button onclick="ejecutarOptimizacion()">Ejecutar Optimización</button>
-  </div>
-  <h2>Subir Archivos CSV</h2>
-<form id="formularioArchivos" enctype="multipart/form-data">
-  <label>Archivo de Zonas (CSV): <input type="file" name="zonas"></label><br><br>
-  <label>Archivo de Distancias (CSV): <input type="file" name="distancias"></label><br><br>
-  <button type="button" onclick="subirArchivos()">Subir Archivos</button>
-</form>
+    <!-- Sección de Carga de Archivos -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Carga de Datos CSV</h2>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M230-360h120v-60H250v-120h100v-60H230q-17 0-28.5 11.5T190-560v160q0 17 11.5 28.5T230-360Zm156 0h120q17 0 28.5-11.5T546-400v-60q0-17-11.5-31.5T506-506h-60v-34h100v-60H426q-17 0-28.5 11.5T386-560v60q0 17 11.5 30.5T426-456h60v36H386v60Zm264 0h60l70-240h-60l-40 138-40-138h-60l70 240ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/></svg>
+      </div>
+      <form id="formularioArchivos" enctype="multipart/form-data" class="upload-form">
+        <div class="file-upload-group">
+          <label for="zonas-file">Archivo de Zonas (CSV):</label>
+          <input type="file" name="zonas" id="zonas-file" accept=".csv">
+        </div>
+        <div class="file-upload-group">
+          <label for="distancias-file">Archivo de Distancias (CSV):</label>
+          <input type="file" name="distancias" id="distancias-file" accept=".csv">
+        </div>
+        <button type="button" class="btn-secondary" onclick="subirArchivos()">Subir Archivos</button>
+        <button type="button" class="btn-primary" onclick="cargarDatosPrueba()" style="margin-left: 16px;">Usar Datos de Prueba</button>
+        <button type="button" onclick="verificarEstadoDatos()" style="margin-left: 8px; padding: 8px 12px; background: #666; color: white; border: none; border-radius: 4px; font-size: 0.9em;">Debug Datos</button>
+        <button type="button" onclick="limpiarDatos()" style="margin-left: 8px; padding: 8px 12px; background: #d32f2f; color: white; border: none; border-radius: 4px; font-size: 0.9em;">Limpiar</button>
+      </form>
+    </section>
 
-  <h2>Zonas</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Zona</th>
-        <th>Latitud</th>
-        <th>Longitud</th>
-        <th>Volumen (kg)</th>
-        <th>Prioridad</th>
-        <th>Penalización</th>
-      </tr>
-    </thead>
-    <tbody id="tablaZonas">
-      <!-- Aquí se insertarán filas dinámicamente -->
-    </tbody>
-  </table>
+    <!-- Sección de Datos de Zonas -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Zonas de Recolección</h2>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm280-40q97-82 144.5-152.5T672-523q0-91-58-144t-134-53q-76 0-134 53t-58 144q0 60 47.5 130.5T480-240Zm0-230q-21 0-35.5-14.5T430-520q0-21 14.5-35.5T480-570q21 0 35.5 14.5T530-520q0 21-14.5 35.5T480-470ZM200-200v-560 560Z"/></svg>
+      </div>
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Zona</th>
+              <th>Latitud</th>
+              <th>Longitud</th>
+              <th>Volumen (kg)</th>
+              <th>Prioridad</th>
+              <th>Penalización</th>
+            </tr>
+          </thead>
+          <tbody id="tablaZonas">
+            <!-- Aquí se insertarán filas dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <h2>Distancias</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Origen</th>
-        <th>Destino</th>
-        <th>Distancia (km)</th>
-        <th>Tiempo Estimado</th>
-      </tr>
-    </thead>
-    <tbody id="tablaDistancias">
-      <!-- Aquí se insertarán filas dinámicamente -->
-    </tbody>
-  </table>
+    <!-- Sección de Datos de Distancias -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Matriz de Distancias</h2>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-80q-106 0-173-33.5T240-200q0-24 14.5-44.5T295-280l63 59q-9 4-19.5 9T322-200q13 16 60 28t98 12q51 0 98.5-12t60.5-28q-7-8-18-13t-21-9l62-60q28 16 43 36.5t15 45.5q0 53-67 86.5T480-80Zm1-220q99-73 149-146.5T680-594q0-102-65-154t-135-52q-70 0-135 52t-65 154q0 67 49 139.5T481-300Zm-1 100Q339-304 269.5-402T200-594q0-71 25.5-124.5T291-808q40-36 90-54t99-18q49 0 99 18t90 54q40 36 65.5 89.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Zm0-80Z"/></svg>
+      </div>
+      <div class="table-container">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Origen</th>
+              <th>Destino</th>
+              <th>Distancia (km)</th>
+              <th>Tiempo Estimado</th>
+            </tr>
+          </thead>
+          <tbody id="tablaDistancias">
+            <!-- Aquí se insertarán filas dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-  <div class="mensaje" id="mensajeEstado">
-    Estado: Esperando datos...
-  </div>
-  <h2>Filtrar Rutas</h2>
-  <label>
-    <select id="filtro" onchange="actualizarFiltro()">
-      <option value="prioridad">Máxima prioridad</option>
-      <option value="distancia">Menor tiempo/distancia</option>
-    </select>
-  </label>
+    <!-- Sección de Estado -->
+    <section class="card status-card">
+      <div class="status-content">
+        <img src="https://images.unsplash.com/photo-1609840115880-1462d17bbfb9?auto=format&fit=crop&w=400&q=80" alt="Estado" class="status-icon">
+        <div class="mensaje" id="mensajeEstado">
+          Estado: Esperando datos...
+        </div>
+      </div>
+    </section>
 
-  <div id="map"></div>
+    <!-- Sección de Filtros y Visualización -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Optimización y Visualización</h2>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-240q100 0 169-70t71-170v-240H480q-100 2-170 71t-70 169q0 100 70 170t170 70Zm-47-67 184-164q9-8 5-19t-16-13l-144-14 86-119q3-5 3.5-9.5T548-654q-4-5-10-4.5t-11 4.5L344-490q-9 8-5 19t16 13l144 14-87 119q-3 5-3 9.5t4 8.5q4 4 9.5 4t10.5-4Zm47 147q-56 0-105.5-17.5T284-227l-55 55q-6 6-13.5 9t-15.5 3q-17 0-28.5-11.5T160-200q0-8 3-15.5t9-13.5l55-55q-32-41-49.5-90.5T160-480q0-134 93-227t227-93h320v320q0 134-93 227t-227 93Zm0-320Z"/></svg>
+      </div>
+      <div class="filter-section">
+        <h3>Filtrar Rutas</h3>
+        <div class="input-group">
+          <label for="filtro">Criterio de Optimización:</label>
+          <select id="filtro" onchange="actualizarFiltro()">
+            <option value="prioridad">Máxima prioridad</option>
+            <option value="distancia">Menor tiempo/distancia</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Mapa -->
+      <div class="map-container">
+        <div id="map"></div>
+      </div>
+      
+      <!-- Métricas -->
+      <div class="metrics-container">
+        <div class="metric-card">
+          <h4>Distancia Total</h4>
+          <span id="distanciaTotal" class="metric-value">xxx km</span>
+        </div>
+        <div class="metric-card">
+          <h4>Tiempo Total</h4>
+          <span id="tiempoTotal" class="metric-value">xxx min</span>
+        </div>
+      </div>
+    </section>
 
-  <p>Distancia Total: <span id="distanciaTotal">xxx km</span></p>
-  <p>Tiempo Total: <span id="tiempoTotal">xxx min</span></p>
+    <!-- Sección de Gráficos -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Análisis de Rendimiento</h2>
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="var(--primary)"><path d="M640-160v-280h160v280H640Zm-240 0v-640h160v640H400Zm-240 0v-440h160v440H160Z"/></svg>
+      </div>
+      <div class="chart-container">
+        <canvas id="scatterChart"></canvas>
+      </div>
+    </section>
+  </main>
 
-  <canvas id="scatterChart"></canvas>
-
-  <!-- Scripts de librerías externas -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Tu JS -->
+  <!-- Scripts cargados al final para mejor rendimiento -->
   <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

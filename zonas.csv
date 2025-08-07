@@ -1,0 +1,9 @@
+id,nombre_zona,latitud,longitud,volumen_estimado_kg,prioridad,penalizacion_min
+1,Centro de Nuevo Chimbote,-9.119,-78.523,150,1,5
+2,Zona Norte,-9.115,-78.520,200,2,3
+3,Zona Sur,-9.125,-78.525,180,1,4
+4,Zona Este,-9.120,-78.518,120,3,2
+5,Zona Oeste,-9.118,-78.528,160,2,6
+6,Mercado Central,-9.121,-78.524,300,1,8
+7,Puerto Nuevo Chimbote,-9.122,-78.530,250,2,5
+8,Urb. Las Flores,-9.116,-78.519,140,3,3
