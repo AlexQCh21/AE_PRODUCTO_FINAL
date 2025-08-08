@@ -273,22 +273,29 @@ function ejecutarOptimizacion() {
 }
 
 // Función para actualizar tabla de zonas
-function actualizarTablaZonas(zonas) {
-  const tbody = document.getElementById('tablaZonas');
-  tbody.innerHTML = '';
+function actualizarTablaZonas() {
+  fetch('/zonas')
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById('tablaZonas');
+      tbody.innerHTML = '';
   
-  zonas.forEach(zona => {
-    const fila = tbody.insertRow();
-    fila.innerHTML = `
-      <td>${zona.id}</td>
-      <td>${zona.nombre_zona}</td>
-      <td>${zona.latitud.toFixed(4)}</td>
-      <td>${zona.longitud.toFixed(4)}</td>
-      <td>${zona.volumen_estimado_kg}</td>
-      <td>${zona.prioridad}</td>
-      <td>${zona.penalizacion_min} min</td>
-    `;
-  });
+        data.forEach(zona => {
+        const fila = tbody.insertRow();
+        fila.innerHTML = `
+          <td>${zona.id}</td>
+          <td>${zona.nombre_zona}</td>
+          <td>${zona.latitud.toFixed(4)}</td>
+          <td>${zona.longitud.toFixed(4)}</td>
+          <td>${zona.volumen_estimado_kg}</td>
+          <td>${zona.prioridad}</td>
+          <td>${zona.penalizacion_min} min</td>
+        `;
+        tbody.appendChild(fila)
+        });
+    })
+    .catch(err => console.error("Error al cargar zonas:", err));
+  
 }
 
 // Función para actualizar tabla de distancias
@@ -803,5 +810,73 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Canvas del gráfico encontrado');
   } else {
     console.error('Canvas del gráfico no encontrado');
+  }
+});
+
+function enviarMensaje(){
+  const input = document.getElementById("chat-input")
+  const texto = input.value.trim()
+  if (texto === "") return;
+  agregarAlChat("Usuario", texto)
+  procesarMensaje(texto)
+  input.value = "";
+}
+
+function agregarAlChat(remitente, mensaje){
+  const chatLog = document.getElementById("chat-log")
+  const div = document.createElement("div")
+  div.textContent = `${remitente}: ${mensaje}`
+  chatLog.appendChild(div)
+  chatLog.scrollTop = chatLog.scrollHeight
+}
+
+
+function procesarMensaje(texto) {
+  const zonas = zonasData.map(z => z.nombre_zona);
+  const zona = zonas.find(z => texto.includes(z));
+  if (!zona) {
+    agregarAlChat("Bot", "Zona no reconocida.");
+    return;
+  }
+
+  let nuevaPenalizacion = null;
+
+  if(texto.includes("congestión")){
+    nuevaPenalizacion = 10;
+  } else if (texto.includes("fluido")){
+    nuevaPenalizacion = 2;
+  } else if (texto.includes("bloqueo") || texto.includes("cerrado")){
+    nuevaPenalizacion = 100;
+  } else if(texto.includes("evento") || texto.includes("feria")){
+    nuevaPenalizacion = 8;
+  }
+
+  if(nuevaPenalizacion !== null){
+    fetch('/modificar_penalizacion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ zona: zona, penalizacion: nuevaPenalizacion })
+    }).then(res => res.json())
+      .then(data => {
+        agregarAlChat("Bot", data.mensaje);
+        actualizarTablaZonas();
+      
+        const index = zonasData.findIndex(z => z.nombre_zona === zona);
+        zonasData[index].penalizacion_min = nuevaPenalizacion
+        guardarDatos();
+      }) 
+  } else {
+    agregarAlChat("Bot", "Mensaje no comprendido.");
+  }
+}
+
+
+// Alternar visibilida del chatbot
+document.getElementById("toggle-chatbot").addEventListener("click", function(){
+  const chatbot = document.querySelector(".chatbot");
+  if(chatbot.style.display === "none" || chatbot.style.display ===""){
+    chatbot.style.display = "flex";
+  } else{
+    chatbot.style.display = "none";
   }
 });

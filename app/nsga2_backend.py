@@ -22,6 +22,25 @@ distancias_data = []
 def index():
     return render_template("index.html")
 
+@app.route('/modificar_penalizacion', methods=['POST'])
+def modificar_penalizacion():
+    data = request.get_json()
+    zona = data.get('zona')
+    nueva_penalizacion = data.get('penalizacion')
+
+    zona_encontrada = next((z for z in zonas_data if z['nombre_zona'] == zona), None)
+
+    if not zona_encontrada:
+        return jsonify({'error': 'Zona no encontrada'})
+    
+    zona_encontrada['penalizacion_min'] = nueva_penalizacion
+    return jsonify({'mensaje': f'Penalización actualizada para {zona} a {nueva_penalizacion} min'}), 200
+
+@app.route('/zonas', methods=['GET'])
+def obtener_zonas():
+    return jsonify(zonas_data)
+
+
 @app.route('/api/subir-csv', methods=['POST'])
 def subir_csv():
     try:
