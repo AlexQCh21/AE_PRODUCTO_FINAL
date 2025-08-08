@@ -5,6 +5,8 @@ import json
 from werkzeug.utils import secure_filename
 import os
 
+port = int(os.environ.get("PORT", 8080)) 
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -16,9 +18,9 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 zonas_data = []
 distancias_data = []
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 @app.route('/api/subir-csv', methods=['POST'])
 def subir_csv():
@@ -211,4 +213,4 @@ def simular_nsga2(zonas, distancias, poblacion, generaciones, mutacion):
     return rutas_generadas
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=port)
